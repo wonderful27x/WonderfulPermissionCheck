@@ -1,0 +1,3 @@
+include ':permissionlibrary'
+include ':app'
+rootProject.name = "WonderfulPermissionCheck"

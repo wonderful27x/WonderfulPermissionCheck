@@ -9,11 +9,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import com.wonderful.permissionlibrary.R;
 import com.wonderful.permissionlibrary.annotation.PermissionResultInterface;
+import com.wonderful.permissionlibrary.utils.MemoryUtil;
 
 /**
- * 权限申请的主要场所，因为权限申请依赖于Activity，所有需要这样一个Activity来集中处理需要申请的权限
+ * @Author wonderful
+ * @Date 2020-9-28
+ * @Description 权限申请的主要场所，因为权限申请依赖于Activity，所有需要这样一个Activity来集中处理需要申请的权限
  * 当一个界面需要申请权限是都会跳转到这里进行
  * 需要把它做成对话框形式并取消所有动画效果
+ * @Version 1.0
  */
 public class PermissionActivity extends AppCompatActivity {
 
@@ -49,28 +53,38 @@ public class PermissionActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //将申请过权限的做一个记录,方便shouldShowRequestPermissionRationale的判断
+        stateSave(permissions);
+
         //解析授权结果
-        PermissionResult permissionResult = PermissionUtil.permissionRequestResult(this,permissions,grantResults);
+        Result result = PermissionUtil.permissionRequestResult(this,permissions,grantResults);
 
         //回调结果,这个回调一定会调用
-        permissionResultInterface.permissionResult(permissionResult);
+        permissionResultInterface.permissionResult(result);
 
         //如果有授权了的权限
-        if (permissionResult.getGranted() != null && permissionResult.getGranted().size() != 0){
-            permissionResultInterface.granted(permissionResult.getGranted());
+        if (result.getGranted() != null && result.getGranted().size() != 0){
+            permissionResultInterface.granted(result.getGranted());
         }
 
         //如果有禁止了权限，但是没有勾选不再提醒
-        if (permissionResult.getDenied() != null && permissionResult.getDenied().size() != 0){
-            permissionResultInterface.denied(permissionResult.getDenied());
+        if (result.getDenied() != null && result.getDenied().size() != 0){
+            permissionResultInterface.denied(result.getDenied());
         }
 
         //如果有禁止了，并勾选了不再提醒的权限
-        if (permissionResult.getForbidden() != null && permissionResult.getForbidden().size() != 0){
-            permissionResultInterface.forbidden(permissionResult.getForbidden());
+        if (result.getForbidden() != null && result.getForbidden().size() != 0){
+            permissionResultInterface.forbidden(result.getForbidden());
         }
         Log.d(TAG, "onRequestPermissionsResult: ");
         finish();
+    }
+
+    //将申请过权限的做一个记录,方便shouldShowRequestPermissionRationale的判断
+    private void stateSave(String[] permissions){
+        for (String permission:permissions){
+            MemoryUtil.sharedPreferencesSaveBoolean(this,permission,true);
+        }
     }
 
     /**

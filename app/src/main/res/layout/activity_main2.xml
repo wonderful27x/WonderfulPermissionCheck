@@ -6,22 +6,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity1">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Activity1"/>
 
     <Button
-        android:id="@+id/use1"
+        android:id="@+id/request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="用法1"/>
+        android:text="申请权限"/>
     <Button
-        android:id="@+id/use2"
+        android:id="@+id/reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="用法2"/>
-    <Button
-        android:id="@+id/use3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="用法3"/>
+        android:text="重置"/>
 
 </LinearLayout>

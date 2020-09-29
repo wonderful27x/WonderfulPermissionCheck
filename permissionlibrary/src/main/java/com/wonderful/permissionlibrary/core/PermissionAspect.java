@@ -9,8 +9,8 @@ import com.wonderful.permissionlibrary.annotation.PermissionCheck;
 import com.wonderful.permissionlibrary.annotation.PermissionDenied;
 import com.wonderful.permissionlibrary.annotation.PermissionForbid;
 import com.wonderful.permissionlibrary.annotation.PermissionGranted;
+import com.wonderful.permissionlibrary.annotation.PermissionResult;
 import com.wonderful.permissionlibrary.annotation.PermissionResultInterface;
-import com.wonderful.permissionlibrary.utils.MemoryUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -19,16 +19,18 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 权限申请切面
+ * @Author wonderful
+ * @Date 2020-9-28
+ * @Description 权限申请切面
+ * @Version 1.0
  */
 @Aspect
-class PermissionAspect {
+public class PermissionAspect {
 
     private static final String TAG = "PermissionAspect";
     private boolean enableSettings = false;
@@ -77,126 +79,53 @@ class PermissionAspect {
 
         enableSettings = permission.enableSettings();
 
-        //先判断权限是否已经授权了
+        //获取需要授权的权限
         List<String> needPermissions = PermissionUtil.needPermissionRequest(context,permission.permissions());
-        //如果全部权限都授权了
+        //如果没有需要授权的权限则进行以下逻辑处理并直接返回
         if (needPermissions.size() == 0){
-
-            //参数校验
-            Map<Method, Boolean> methodMap = annotationMethodLegalCheck(object,com.wonderful.permissionlibrary.annotation.PermissionResult.class,new Class<?>[]{PermissionResult.class});
-            //调用反射方法
-            for (Map.Entry<Method, Boolean> entry:methodMap.entrySet()){
-                //有参数，参数可以有多个，但是一定要和annotationMethodLegalCheck校验的一致
-                if (entry.getValue()){
-                    PermissionResult permissionResult = new PermissionResult();
-                    permissionResult.addGranted(Arrays.asList(permission.permissions()));
-                    invokeAnnotation(object,entry.getKey(),permissionResult);
-                }
-                //无参数
-                else {
-                    invokeAnnotation(object,entry.getKey());
-                }
-            }
-
-            //接口回调结果
-            if (object instanceof IPermission){
-                IPermission iPermission = (IPermission) object;
-                iPermission.granted(Arrays.asList(permission.permissions()));
-            }
-
-            //参数校验
-            methodMap = annotationMethodLegalCheck(object, PermissionGranted.class,new Class<?>[]{List.class});
-            //调用方法
-            for (Map.Entry<Method, Boolean> entry:methodMap.entrySet()){
-                //有参数，参数可以有多个，但是一定要和annotationMethodLegalCheck校验的一致
-                if (entry.getValue()){
-                    invokeAnnotation(object,entry.getKey(),Arrays.asList(permission.permissions()));
-                }
-                //无参数
-                else {
-                    invokeAnnotation(object,entry.getKey());
-                }
-            }
-
-            return;
-        }
-        //有没有授权的权限并且全是勾选了不再提醒的
-        else {
-            //获取被拒绝了并且没有勾选不再提醒的权限数量
-            int count = 0;
-            for (String needs:needPermissions){
-                if (PermissionUtil.shouldShowRequestPermissionRationale(context,needs)){
-                    count++;
-                }
-            }
-            //如果是0并且不是第一次申请权限，说明所有的权限都是勾选了不在提醒的权限，则不在启动权限申请界面而是跳转到系统设置界面(如果开启了此功能的话)
-            //测试发现调用系统禁止权限shouldShowRequestPermissionRationale为true
-            boolean firstPermissionCheck = MemoryUtil.sharedPreferencesGetBoolean(context,"firstPermissionCheck",true);
-            if (firstPermissionCheck){
-                MemoryUtil.sharedPreferencesSaveBoolean(context,"firstPermissionCheck",false);
-            }
-            if (count == 0 && !firstPermissionCheck){
+            //获取权限校验结果
+            Result result = PermissionUtil.permissionCheck(context, permission.permissions());
+            //如果申请的权限全是被禁止不再提醒的权限,则根据条件判断是否要启动系统设置界面
+            if (result.getForbidden() != null && result.getForbidden().size() == permission.permissions().length){
                 //启动系统设置界面
                 if (enableSettings){
                     PermissionUtil.startSystemPermissionActivity(context);
                 }
-
-                //反射回调结果
-                //参数校验
-                Map<Method, Boolean> methodMap = annotationMethodLegalCheck(object,com.wonderful.permissionlibrary.annotation.PermissionResult.class,new Class<?>[]{PermissionResult.class});
-                //调用方法
-                for (Map.Entry<Method, Boolean> entry:methodMap.entrySet()){
-                    //有参数，参数可以有多个，但是一定要和annotationMethodLegalCheck校验的一致
-                    if (entry.getValue()){
-                        PermissionResult permissionResult = new PermissionResult();
-                        permissionResult.addForbidden(needPermissions);
-                        invokeAnnotation(object,entry.getKey(),permissionResult);
-                    }
-                    //无参数
-                    else {
-                        invokeAnnotation(object,entry.getKey());
-                    }
-                }
-
-                //接口回调结果
-                if (object instanceof IPermission){
-                    IPermission iPermission = (IPermission) object;
-                    iPermission.forbidden(needPermissions);
-                }
-
-                //参数校验
-                methodMap = annotationMethodLegalCheck(object, PermissionForbid.class,new Class<?>[]{List.class});
-                //调用方法
-                for (Map.Entry<Method, Boolean> entry:methodMap.entrySet()){
-                    //有参数，参数可以有多个，但是一定要和annotationMethodLegalCheck校验的一致
-                    if (entry.getValue()){
-                        invokeAnnotation(object,entry.getKey(),needPermissions);
-                    }
-                    //无参数
-                    else {
-                        invokeAnnotation(object,entry.getKey());
-                    }
-                }
-
-                return;
             }
+            //参数校验
+            Map<Method, Boolean> methodMap = annotationMethodLegalCheck(object,PermissionResult.class,new Class<?>[]{Result.class});
+            //反射调用被PermissionResult注解的方法
+            for (Map.Entry<Method, Boolean> entry:methodMap.entrySet()){
+                //有参数，参数可以有多个，但是一定要和annotationMethodLegalCheck校验的一致
+                if (entry.getValue()){
+                    invokeAnnotation(object,entry.getKey(), result);
+                }
+                //无参数
+                else {
+                    invokeAnnotation(object,entry.getKey());
+                }
+            }
+            return;
         }
-        //有需要申请的权限,真正的执行权限申请
+        //如果有需要申请的权限,真正的执行权限申请
         //转成数组
         final String[] permissionArray = new String[needPermissions.size()];
         needPermissions.toArray(permissionArray);
         //所有的检查都通过了则将权限申请交给PermissionActivity去完成
+        final Activity finalContext = context;
         PermissionActivity.permissionRequest(context, permissionArray, new PermissionResultInterface() {
             //结果回调,必须回调给外界的
             @Override
-            public void permissionResult(PermissionResult result) {
+            public void permissionResult(Result result) {
                 //参数校验
-                Map<Method, Boolean> methodMap = annotationMethodLegalCheck(object,com.wonderful.permissionlibrary.annotation.PermissionResult.class,new Class<?>[]{PermissionResult.class});
-                //调用方法
+                Map<Method, Boolean> methodMap = annotationMethodLegalCheck(object, PermissionResult.class,new Class<?>[]{Result.class});
+                //再次校验获取授权结果
+                Result permissionResult = PermissionUtil.permissionCheck(finalContext, permission.permissions());
+                //反射调用被PermissionResult注解的方法
                 for (Map.Entry<Method, Boolean> entry:methodMap.entrySet()){
                     //有参数，参数可以有多个，但是一定要和annotationMethodLegalCheck校验的一致
                     if (entry.getValue()){
-                        invokeAnnotation(object,entry.getKey(),result);
+                        invokeAnnotation(object,entry.getKey(),permissionResult);
                     }
                     //无参数
                     else {

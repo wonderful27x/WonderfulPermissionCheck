@@ -1,6 +1,6 @@
 package com.wonderful.permissionlibrary.annotation;
 
-import com.wonderful.permissionlibrary.core.PermissionResult;
+import com.wonderful.permissionlibrary.core.Result;
 
 /**
  * @Author wonderful
@@ -11,6 +11,6 @@ import com.wonderful.permissionlibrary.core.PermissionResult;
 public interface PermissionResultInterface extends IPermission{
 
     //授权结果回调方法,参数为授权结果封装类
-    public void permissionResult(PermissionResult result);
+    public void permissionResult(Result result);
 
 }

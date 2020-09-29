@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
-
-apply from: "$project.rootDir/aspectJ.gradle"
+apply from: "aspectJ.gradle"
 
 android {
     compileSdkVersion 30
@@ -32,5 +31,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    //权限申请library
     implementation project(':permissionlibrary')
 }

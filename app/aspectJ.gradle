@@ -61,8 +61,3 @@ variants.all { variant ->
         }
     }
 }
-
-dependencies {
-    //AspectJ
-    implementation 'org.aspectj:aspectjrt:1.8.13'
-}

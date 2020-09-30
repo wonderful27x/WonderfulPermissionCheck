@@ -64,5 +64,5 @@ variants.all { variant ->
 
 dependencies {
     //AspectJ
-    implementation 'org.aspectj:aspectjrt:1.9.6'
+    api 'org.aspectj:aspectjrt:1.9.6'
 }

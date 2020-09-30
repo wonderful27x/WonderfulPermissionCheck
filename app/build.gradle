@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
-apply from: "aspectJ_app.gradle"
-
+apply from: "$project.rootDir/permissionlibrary/aspectJ_application.gradle"
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.1"

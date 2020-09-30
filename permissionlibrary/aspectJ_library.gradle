@@ -6,7 +6,7 @@ import org.aspectj.bridge.MessageHandler
 import org.aspectj.tools.ajc.Main
 
 final def log = project.logger
-final def variants = project.android.applicationVariants
+final def variants = project.android.libraryVariants
 
 // AspectJ使用
 // 版本界限：As-3.0.1 + gradle4.4-all （需要配置r17的NDK环境）
@@ -25,6 +25,7 @@ buildscript {
 variants.all { variant ->
     if (!variant.buildType.isDebuggable()) {
         log.debug("Skipping non-debuggable build type '${variant.buildType.name}'.")
+        //TODO do not return or it calls an error!!!
     }
 
     JavaCompile javaCompile = variant.javaCompile
@@ -59,4 +60,9 @@ variants.all { variant ->
             }
         }
     }
+}
+
+dependencies {
+    //AspectJ
+    implementation 'org.aspectj:aspectjrt:1.9.6'
 }

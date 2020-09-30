@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "aspectJ_permission.gradle"
+apply from: "aspectJ_library.gradle"
 
 android {
     compileSdkVersion 30

@@ -17,8 +17,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.aspectj:aspectjtools:1.8.9'
-        classpath 'org.aspectj:aspectjweaver:1.8.9'
+        classpath 'org.aspectj:aspectjtools:1.9.6'
+        classpath 'org.aspectj:aspectjweaver:1.9.6'
     }
 }
 
@@ -64,5 +64,5 @@ variants.all { variant ->
 
 dependencies {
     //AspectJ
-    api 'org.aspectj:aspectjrt:1.8.13'
+    api 'org.aspectj:aspectjrt:1.9.6'
 }

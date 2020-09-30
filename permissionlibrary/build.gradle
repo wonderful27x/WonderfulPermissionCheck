@@ -9,8 +9,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.aspectj:aspectjtools:1.8.9'
-        classpath 'org.aspectj:aspectjweaver:1.8.9'
+        classpath 'org.aspectj:aspectjtools:1.9.6'
+        classpath 'org.aspectj:aspectjweaver:1.9.6'
     }
 }
 
@@ -44,7 +44,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     //AspectJ
-    api 'org.aspectj:aspectjrt:1.8.13'
+    api 'org.aspectj:aspectjrt:1.9.6'
 }
 
 

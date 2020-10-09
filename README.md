@@ -14,13 +14,13 @@ buildscript {
     }  
 }  
 
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        maven { url 'https://jitpack.io' }
-    }
-}
+allprojects {  
+    repositories {  
+        google()  
+        jcenter()  
+        maven { url 'https://jitpack.io' }  
+    }  
+}  
 
 ## 2.在要使用的module根目录创建name.gradle,注意如果是library则variants需要改成variants = project.android.libraryVariants  
 ===========================name.gradle=============================  
@@ -91,7 +91,7 @@ variants.all { variant ->
 
 ## 3.在module的build.gradle中引入name.gradle文件,并在dependencies中引入依赖  
 ...  
-apply from: "aspectJ_application.gradle"  
+apply from: "name.gradle"  
 dependencies {  
     ...  
     implementation 'com.github.wonderful27x:WonderfulPermissionCheck:v1.2.0'  

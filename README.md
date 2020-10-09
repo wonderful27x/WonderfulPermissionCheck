@@ -4,7 +4,23 @@ An android permission check project using aspectJ
 
 # 如何使用:  
 ## 1.在根目录的build.gradle添加aspectj和jitpack仓库配置  
-![image](https://github.com/wonderful27x/WonderfulPermissionCheck/tree/master/image/image1.jpg)  
+buildscript {  
+    ...  
+    dependencies {  
+        ...  
+        // AspectJ使用  
+        classpath 'org.aspectj:aspectjtools:1.8.9'  
+        classpath 'org.aspectj:aspectjweaver:1.8.9'  
+    }  
+}  
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+}
 
 ## 2.在要使用的module根目录创建name.gradle,注意如果是library则variants需要改成variants = project.android.libraryVariants  
 ===========================name.gradle=============================  
@@ -74,7 +90,12 @@ variants.all { variant ->
 ===========================name.gradle=============================  
 
 ## 3.在module的build.gradle中引入name.gradle文件,并在dependencies中引入依赖  
-![image](https://github.com/wonderful27x/WonderfulPermissionCheck/tree/master/image/image2.jpg)  
+...  
+apply from: "aspectJ_application.gradle"  
+dependencies {  
+    ...  
+    implementation 'com.github.wonderful27x:WonderfulPermissionCheck:v1.2.0'  
+}  
 
 ## 4.通过注解来申请权限和获取授权结果  
 ![demo](https://github.com/wonderful27x/WonderfulPermissionCheck/tree/master/app/src/main/java/com/wonderful/wonderfulpermissioncheck)  

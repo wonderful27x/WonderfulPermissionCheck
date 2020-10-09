@@ -27,8 +27,8 @@ buildscript {
         mavenCentral()  
     }  
     dependencies {  
-        classpath 'org.aspectj:aspectjtools:1.8.9'
-        classpath 'org.aspectj:aspectjweaver:1.8.9'
+        classpath 'org.aspectj:aspectjtools:1.8.9'  
+        classpath 'org.aspectj:aspectjweaver:1.8.9'  
     }  
 }  
 

@@ -9,8 +9,8 @@ buildscript {
     dependencies {  
         ...  
         // AspectJ使用  
-        classpath 'org.aspectj:aspectjtools:1.8.9'  
-        classpath 'org.aspectj:aspectjweaver:1.8.9'  
+        classpath 'org.aspectj:aspectjtools:1.9.2'  
+        classpath 'org.aspectj:aspectjweaver:1.9.2'  
     }  
 }  
 
@@ -43,8 +43,8 @@ buildscript {
         mavenCentral()  
     }  
     dependencies {  
-        classpath 'org.aspectj:aspectjtools:1.8.9'  
-        classpath 'org.aspectj:aspectjweaver:1.8.9'  
+        classpath 'org.aspectj:aspectjtools:1.9.2'  
+        classpath 'org.aspectj:aspectjweaver:1.9.2'  
     }  
 }  
 
@@ -94,7 +94,7 @@ variants.all { variant ->
 apply from: "name.gradle"  
 dependencies {  
     ...  
-    implementation 'com.github.wonderful27x:WonderfulPermissionCheck:v1.2.0'  
+    implementation 'com.github.wonderful27x:WonderfulPermissionCheck:v1.3.0'  
 }  
 
 ## 4.通过注解来申请权限和获取授权结果  
